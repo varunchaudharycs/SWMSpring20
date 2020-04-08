@@ -14,14 +14,15 @@ function delay(time) {
 }
 
 async function crawlForumPost(page, forum_post_url) {
-    // console.log(forum_post_url);
+    console.log(forum_post_url);
     await page.goto(forum_post_url,
-        { waitUntil: 'networkidle2' })
+        { waitUntil: 'networkidle2', timeout: 0 })
 
-    await delay(1000);
+    await delay(500);
 
     var forumPost = await page.evaluate((forum_post_url) => {
         var postUserDetails = document.querySelectorAll('#pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.user-detail');
+        var likeDetailsNodeList = document.querySelectorAll('#pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.thread-meta > div.social > span.ui-like.ui-tip > span');
         var postThreadDetailsNodeList = document.querySelectorAll('#pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.thread-detail');
         var postTagsNodeList = document.querySelectorAll('#pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.thread-tags > ul > li');
         var responseNodeList = document.querySelectorAll('#pi73-paged-content > ul.content-list.content.thread-list.margin-bottom.webmd-mb-rsp > li');
@@ -30,61 +31,74 @@ async function crawlForumPost(page, forum_post_url) {
         // #pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.user-detail
         // #pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.thread-detail
         // #pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.thread-tags > ul > li
+        // #\31 13129 > div.thread-meta > div.social > span.ui-like.ui-tip > span
+        // #pi73-paged-content > ul.content-list.content.margin-bottom.thread-list.webmd-mb-thrd > li > div.thread-meta > div.social > span.ui-like.ui-tip > span
 
-        const postUserDetailsFields = postUserDetails[0].innerText.trim().split('\n');
-        const postDetailsStr = postThreadDetailsNodeList[0].innerText.trim();
-        const startIndexOfContent = postDetailsStr.indexOf('\n');
+        if (postUserDetails != null && postUserDetails.length > 0) {
+            const postUserDetailsFields = postUserDetails[0].innerText.trim().split('\n');
+            const postDetailsStr = postThreadDetailsNodeList[0].innerText.trim();
+            const startIndexOfContent = postDetailsStr.indexOf('\n');
 
-        // parse tags if there exists one
-        var tags = []
-        for (var t = 0; t < postTagsNodeList.length; t++) {
-            tags[t] = postTagsNodeList[t].innerText.trim();
-        }
+            // parse tags if there exists one
+            var tags = []
+            for (var t = 0; t < postTagsNodeList.length; t++) {
+                tags[t] = postTagsNodeList[t].innerText.trim();
+            }
 
-        // create post details object
-        const postDetails = {
-            author: postUserDetailsFields[0].trim(),
-            post_time: postUserDetailsFields[1].trim(),
-            post_title: postDetailsStr.substr(0, startIndexOfContent).trim(),
-            post_content: postDetailsStr.substr(startIndexOfContent).trim(),
-            tags: tags
-        };
+            var likeCount = '0';
+            if (likeDetailsNodeList.length > 0) {
+                likeCount = likeDetailsNodeList[0].innerText.trim()
+            }
 
-        // if there exists responses/reply in this forum post, index as part of the post
-        var responses = [];
-        for (var j = 0; j < responseNodeList.length; j++) {
-            var responseText = responseNodeList[j].innerText.trim();
-            var indexOfNewlineChar = responseText.indexOf('\n');
-            const respAuthor = responseText.substr(0, indexOfNewlineChar);
-            responseText = responseText.substr(indexOfNewlineChar + 1);
-            indexOfNewlineChar = responseText.indexOf('\n');
-            const respTime = responseText.substr(0, indexOfNewlineChar);
-            responseText = responseText.substr(indexOfNewlineChar + 1);
-            indexOfNewlineChar = responseText.indexOf('\n');
-            const respTitle = responseText.substr(0, indexOfNewlineChar);
-            responseText = responseText.substr(indexOfNewlineChar + 1);
-            const respContent = responseText.substr(0, responseText.lastIndexOf('Reply'));
+            // create post details object
+            const postDetails = {
+                author: postUserDetailsFields[0].trim(),
+                post_time: postUserDetailsFields[1].trim(),
+                post_title: postDetailsStr.substr(0, startIndexOfContent).trim(),
+                post_content: postDetailsStr.substr(startIndexOfContent).trim(),
+                like_count: likeCount,
+                tags: tags
+            };
 
-            responses[j] = {
-                author: respAuthor,
-                resp_time: respTime,
-                resp_title: respTitle,
-                resp_content: respContent
+            // if there exists responses/reply in this forum post, index as part of the post
+            var responses = [];
+            for (var j = 0; j < responseNodeList.length; j++) {
+                var responseText = responseNodeList[j].innerText.trim();
+                var indexOfNewlineChar = responseText.indexOf('\n');
+                const respAuthor = responseText.substr(0, indexOfNewlineChar);
+                responseText = responseText.substr(indexOfNewlineChar + 1);
+                indexOfNewlineChar = responseText.indexOf('\n');
+                const respTime = responseText.substr(0, indexOfNewlineChar);
+                responseText = responseText.substr(indexOfNewlineChar + 1);
+                indexOfNewlineChar = responseText.indexOf('\n');
+                const respTitle = responseText.substr(0, indexOfNewlineChar);
+                responseText = responseText.substr(indexOfNewlineChar + 1);
+                const respContent = responseText.substr(0, responseText.lastIndexOf('Reply'));
+
+                responses[j] = {
+                    author: respAuthor,
+                    resp_time: respTime,
+                    resp_title: respTitle,
+                    resp_content: respContent
+                };
+            }
+
+            // return to enclosing method
+            return {
+                post: postDetails,
+                responses: responses
             };
         }
 
-        // return to enclosing method
-        return {
-            post: postDetails,
-            responses: responses
-        };
     });
 
-    // add forum post url to the json
-    forumPost['post_url'] = forum_post_url;
+    if (forumPost != null) {
+        // add forum post url to the json
+        forumPost['post_url'] = forum_post_url;
 
-    // console.log(forumPost);
-    return forumPost;
+        // console.log(forumPost);
+        return forumPost;
+    }
 }
 
 exports.crawlForumPosts = async function () {
@@ -115,7 +129,10 @@ exports.crawlForumPosts = async function () {
             forumPosts = [];
             for (var j = 0; j < forumLinks.length; j++) {
                 var postDetails = await crawlForumPost(page, forumLinks[j]);
-                forumPosts[j] = postDetails;
+                // if some error happens for some URL we will discard that empty object
+                if (postDetails != null) {
+                    forumPosts[j] = postDetails;
+                }
             }
 
             // finished crawling all posts from this json file, write crawled post as json
@@ -138,6 +155,7 @@ exports.crawlForumPosts = async function () {
 }
 
 // link json files
+// cancer creating issue
 postLinksJSONFiles = {
     adhd: './links_json/adhd-post_links.json',
     allerrgies: './links_json/allerrgies-post_links.json',
