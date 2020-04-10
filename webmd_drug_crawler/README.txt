@@ -1,3 +1,5 @@
+Crawling status: completed
+
 Steps to run WebMD drugs review crawler(Scrapy based - Python):
 
 1. Install Scrapy using following command:

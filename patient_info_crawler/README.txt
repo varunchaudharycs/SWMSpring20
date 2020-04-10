@@ -1,3 +1,5 @@
+Crawling status: forums post link crawling ended up in unwanted loop
+
 Steps to run patient.info forum crawler(Scrapy based - Python):
 
 1. Install Scrapy using following command:

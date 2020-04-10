@@ -1,3 +1,5 @@
+Crawling status: completed
+
 Steps to run WebMD Message Boards Browser Automation based crawler:
 
 1. install node.js if not already installed on your machine.
