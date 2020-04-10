@@ -1,7 +1,9 @@
+
 import scrapy
 import os
 import json
 import re
+import urllib.parse as url_parser
 
 from webmd_drug_crawler.items import DrugReviewItem
 
@@ -9,6 +11,7 @@ CURRENT_DIR = os.path.dirname(__file__)
 WEBMD_HOME_PAGE_URL = 'https://www.webmd.com'
 
 
+# Totally crawled reviews - 3,63,916
 #  Run using the following command:
 #  scrapy crawl webmd_drug_review_crawler -t json -o webmd_drugs_reviews.json
 class WebMDDrugReviewSpider(scrapy.Spider):
@@ -156,14 +159,29 @@ class WebMDDrugReviewSpider(scrapy.Spider):
             #     '#ctnStars > div.catRatings.lastEl.clearfix > p.inlineRating.starRating > span::text').extract_first().strip())
 
         if response.xpath('//*[@id="ratings_fmt"]/div/div/a[contains(text(), "Next")]'):
-            # creates issue as adds + in the URL
+            # creates issue as adds + in the URL and map lookup fails as review page base url is used to reverse lookup
             # next_page_url = response.xpath(
             #     '//*[@id="ratings_fmt"]/div/div/a[contains(text(), "Next")]/@href').extract_first()
             # next_page_url = WEBMD_HOME_PAGE_URL + next_page_url
             current_page_url = response.url
             print('Current Page: '+current_page_url)
-            page_idx = int(current_page_url[current_page_url.find('&pageIndex=') + len('&pageIndex='): current_page_url.find('&sortby=')])
-            next_page_url = current_page_url.replace('pageIndex=' + str(page_idx), 'pageIndex=' + str(++page_idx))
+            #             # page_idx = int(current_page_url[current_page_url.find('&pageIndex=') + len('&pageIndex='): current_page_url.find('&sortby=')])
+            #             # next_page_url = current_page_url.replace('pageIndex=' + str(page_idx), 'pageIndex=' + str(++page_idx))
+
+            url_parts = url_parser.urlsplit(current_page_url)
+            params = url_parser.parse_qs(url_parts.query)
+            last_page_idx = int(params['pageIndex'][0])
+            last_page_idx = last_page_idx + 1
+            params['pageIndex'] = [str(last_page_idx)]
+            new_query = ''
+            count = 0
+            for param_key in params:
+                if count != 0:
+                    new_query = new_query + '&'
+                new_query = new_query + param_key + '=' + params[param_key][0]
+                count += 1
+
+            next_page_url = url_parser.urlunsplit((url_parts[0], url_parts[1], url_parts[2], new_query, url_parts.fragment))
             print('Next Page: ' + next_page_url)
             yield scrapy.Request(url=next_page_url, callback=self.parse, dont_filter=True)
 
@@ -175,3 +193,5 @@ class WebMDDrugReviewSpider(scrapy.Spider):
 # https://www.webmd.com/drugs/2/drug-57708/bc-oral/details - drug details page
 # https://www.webmd.com/drugs/drugreview-57708-BC-oral.aspx?drugid=57708&drugname=BC-oral
 # &pageIndex=0&sortby=3&conditionFilter=1455
+
+# INFO: Crawled 15685 pages (at 42 pages/min), scraped 62283 items (at 172 items/min)
