@@ -19,3 +19,10 @@ Library used(should be installed before running):
 1. Scrapy
 2. beautifulsoup4
 
+### Handling Large JSON files:
+- install git lfs if not already:
+git lfs install
+- if your git pull does not work properly for large files:
+git lfs pull
+- to track large files:
+git lfs track <specific_json_file_name>
