@@ -1,4 +1,4 @@
-Crawling status: forums post link crawling ended up in unwanted loop
+Crawling status: crawled 236490 unique forum posts.
 
 Steps to run patient.info forum crawler(Scrapy based - Python):
 
