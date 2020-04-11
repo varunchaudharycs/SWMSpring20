@@ -7,13 +7,14 @@ from patient_info_crawler.items import PIForumPostLinkItem
 URL_PREFIX = "https://patient.info"
 CURRENT_DIR = os.path.dirname(__file__)
 
-
+# intentionally crawling different community in the same json file to avoid having more than 1000 json files
 # scrapy crawl pi_forum_posts_crawler  -t json -o patient_info_forum_posts.json
 # Uses group links json file crawled by PatientInfoForumsSpider
 # PatientInfoForumPostsLinkSpider
 class PatientInfoForumSpider(scrapy.Spider):
     name = 'pi_forum_posts_crawler'
     allowed_domains = ['patient.info']
+    # debug with single forum
     # start_urls = [
     #     'https://patient.info/forums/discuss/browse/abdominal-disorders-3321',
     # ]
@@ -21,6 +22,7 @@ class PatientInfoForumSpider(scrapy.Spider):
     #     'https://patient.info/forums/discuss/browse/abdominal-disorders-3321' : 'Abdominal Disorders'
     # }
 
+    crawled_urls = set()
     start_urls = []
     group_url_to_group_name_map = {}
     with open(CURRENT_DIR + '/../../patient_info_forums.json') as f:
@@ -31,6 +33,11 @@ class PatientInfoForumSpider(scrapy.Spider):
 
     def parse(self, response):
         print("Processing: " + response.url)
+        # this link has already been crawled - prevent duplicate forum posts
+        if response.url in self.crawled_urls:
+            return
+
+        self.crawled_urls.add(response.url)
 
         for post in response.xpath('//*[@id="group-discussions"]/ul/li'):
             # to ensure we don't crawl advertisement post embedded in the list
@@ -50,13 +57,15 @@ class PatientInfoForumSpider(scrapy.Spider):
             next_page_url = ''
             # first page next is different than the first page next
             if "page=" not in response.url:
-                next_page_url = response.css('#group-discussions > div.group-discussions__paginate_bottom > form > a::attr(href)').extract_first()
+                # next_page_url = response.css('#group-discussions > div.group-discussions__paginate_bottom > form > a::attr(href)').extract_first()
+                next_page_url = response.css(
+                    '#group-discussions > div.group-discussions__paginate_bottom > form > a.reply__control.reply-ctrl-last.link::attr(href)').extract_first()
             else:
                 if response.css('#group-discussions > div.group-discussions__paginate_bottom > form > a.reply__control.reply-ctrl-last.link::attr(href)'):
                     next_page_url = response.css(
                     '#group-discussions > div.group-discussions__paginate_bottom > form > a.reply__control.reply-ctrl-last.link::attr(href)').extract_first()
 
-            if next_page_url != '':
+            if next_page_url != '' and next_page_url not in self.crawled_urls:
                 print('Next Page: ' + next_page_url)
                 # next_page_url = response.xpath('//*[@id="group-discussions"]/div[2]/form/a/@href').extract_first()
                 # next_page_url = response.css('#group-discussions > div.group-discussions__paginate_bottom > form > a::attr(href)').extract_first()
