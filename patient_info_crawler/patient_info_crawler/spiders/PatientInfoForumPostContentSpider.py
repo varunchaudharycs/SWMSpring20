@@ -8,7 +8,7 @@ from patient_info_crawler.items import PIForumPostContentItem, PIForumPostCommen
 URL_PREFIX = "https://patient.info"
 CURRENT_DIR = os.path.dirname(__file__)
 
-
+# About 235901 unique forum posts crawled
 # scrapy crawl pi_forum_posts_content_crawler  -t json -o patient_info_forum_posts_content.json
 # Uses posts links json file crawled by PatientInfoForumPostsLinkSpider
 class PatientInfoForumPostContentSpider(scrapy.Spider):
@@ -21,8 +21,7 @@ class PatientInfoForumPostContentSpider(scrapy.Spider):
 
     start_urls = []
     group_url_to_group_name_map = {}
-    with open(CURRENT_DIR + '/../../patient_info_forum_posts-abdominal.json') as f:
-    # with open(CURRENT_DIR + '/../../patient_info_forum_posts.json') as f:
+    with open(CURRENT_DIR + '/../../patient_info_forum_posts.json') as f:
         forums = json.load(f)
         for forum in forums:
             start_urls.append(forum['post_url'])
@@ -37,9 +36,10 @@ class PatientInfoForumPostContentSpider(scrapy.Spider):
         # print(post_title)
         post_time = response.css('#topic > article > p > span:nth-child(1) > time::attr(datetime)').extract_first()
         # print(post_time)
-        num_of_people_following_str = response.css('#topic > article > p > span:nth-child(2)::text').extract_first().strip()
+        num_of_people_following_str = response.css('#topic > article > p > span:nth-child(2)::text').extract_first()
         follow_count_str = '0'
         if num_of_people_following_str:
+            num_of_people_following_str = num_of_people_following_str.strip()
             for c in num_of_people_following_str:
                 if c.isdigit():
                     follow_count_str = follow_count_str + c
