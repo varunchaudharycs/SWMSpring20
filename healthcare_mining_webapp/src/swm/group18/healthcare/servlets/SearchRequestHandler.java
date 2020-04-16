@@ -1,11 +1,12 @@
 package swm.group18.healthcare.servlets;
 
+import swm.group18.healthcare.utils.ResponseUtil;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class SearchRequestHandler extends HttpServlet {
 
@@ -27,14 +28,23 @@ public class SearchRequestHandler extends HttpServlet {
         String searchType = request.getParameter("type");
         System.out.println(searchQuery);
         System.out.println(searchType);
+        ResponseUtil.setDefaultResponseHeaders(response);
 
-        PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<body>");
-        out.println("<h1>Search Servlet</h1>");
-        out.println("</body>");
-        out.println("</html>");
-        out.flush();
-        out.close();
+//        TODO: temporary search response for client side development
+//        tobe removed later
+        if (searchType.equals("disease_search")) {
+            ResponseUtil.sendDevJSONResponseForDiseaseSearch(getServletContext(), response);
+        } else if (searchType.equals("drug_search")) {
+            ResponseUtil.sendDevJSONResponseForDrugSearch(getServletContext(), response);
+        }
+
+//        PrintWriter out = response.getWriter();
+//        out.println("<html>");
+//        out.println("<body>");
+//        out.println("<h1>Search Servlet</h1>");
+//        out.println("</body>");
+//        out.println("</html>");
+//        out.flush();
+//        out.close();
     }
 }
