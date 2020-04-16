@@ -13,4 +13,13 @@
         <url-pattern>/search</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>indexing_handler</servlet-name>
+        <servlet-class>swm.group18.healthcare.servlets.IndexRequestHandler</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>indexing_handler</servlet-name>
+        <url-pattern>/index</url-pattern>
+    </servlet-mapping>
+
 </web-app>

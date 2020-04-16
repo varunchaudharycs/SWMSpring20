@@ -1,6 +1,17 @@
 function sendSearchRequest() {
-    const searchQuery = $('#search_box').val();
+    var searchQuery = $('#search_box').val();
+    searchQuery = searchQuery.trim();
     const selectedSearchOption = document.getElementById("search_selection").value;
+    // empty search is not allowed, show alert
+    if (searchQuery === '') {
+        if (selectedSearchOption === 'disease_search') {
+            swal( "Empty Search Query" ,  "Please type the symptoms you want to search." ,  "error" );
+        }
+        else if (selectedSearchOption === 'drug_search') {
+            swal("Empty Search Query", "Please type the disease name you want to search.", "error");
+        }
+    }
+
     ajaxGetRequest(window.location.href + '/search?query=' + searchQuery + '&type=' + selectedSearchOption, handleSearchResponse)
 }
 
