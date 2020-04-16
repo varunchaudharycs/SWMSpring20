@@ -1,0 +1,2 @@
+# Don't include temporary output directory
+/healthcare_mining_webapp/out/**
