@@ -7,9 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96d4b006-52d9-4c65-b179-13489bf6dcbb" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/json_simple_1_1_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -170,7 +168,7 @@
       <updated>1586498723992</updated>
       <workItem from="1586498725298" duration="10304000" />
       <workItem from="1587003367266" duration="161000" />
-      <workItem from="1587003531309" duration="72000" />
+      <workItem from="1587003531309" duration="387000" />
     </task>
     <servers />
   </component>
@@ -186,6 +184,10 @@
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state x="184" y="123" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877/1440.23.1920.1057@0.23.1440.877" timestamp="1586498853364" />
+    <state x="2165" y="363" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1587003816880">
+      <screen x="1440" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2165" y="363" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1440.877/1440.23.1920.1057@1440.23.1920.1057" timestamp="1587003816880" />
     <state width="1285" height="228" key="GridCell.Tab.0.bottom" timestamp="1587003527663">
       <screen x="1440" y="23" width="1920" height="1057" />
     </state>
@@ -250,5 +252,9 @@
       <screen x="1440" y="23" width="1920" height="1057" />
     </state>
     <state x="2093" y="386" key="com.intellij.ide.util.TipDialog/0.23.1440.877/1440.23.1920.1057@1440.23.1920.1057" timestamp="1587003369074" />
+    <state x="2065" y="261" width="670" height="676" key="search.everywhere.popup" timestamp="1587003680821">
+      <screen x="1440" y="23" width="1920" height="1057" />
+    </state>
+    <state x="2065" y="261" width="670" height="676" key="search.everywhere.popup/0.23.1440.877/1440.23.1920.1057@1440.23.1920.1057" timestamp="1587003680821" />
   </component>
 </project>

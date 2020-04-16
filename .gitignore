@@ -1,2 +1,3 @@
 # Don't include temporary output directory
 /healthcare_mining_webapp/out/**
+/healthcare_mining_webapp/web/WEB-INF/crawled_data/**
