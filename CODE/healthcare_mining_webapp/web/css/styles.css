@@ -212,3 +212,102 @@ h4 {
 li.red {
     color: red
 }
+
+.response{
+    display: none;
+    vertical-align: top;
+    width: 400px;
+    border: 2px solid darkslategray;
+    padding: 5px;
+    height: 400px;
+    text-align: justify;
+    box-shadow: 2px 2px gray;
+    background-color: floralwhite;
+    overflow-y: scroll;
+}
+.results{
+    text-align: center;
+}
+.posts {
+    display: none;
+    vertical-align: top;
+    width: 400px;
+    border: 2px solid darkslategray;
+    background-color: floralwhite;
+    padding: 5px;
+    height: 400px;
+    margin-left: 20px;
+    text-align: justify;
+    box-shadow: 2px 2px gray;
+    overflow-y: scroll;
+}
+.drug {
+    display: none;
+    vertical-align: top;
+    width: 400px;
+    border: 2px solid darkslategray;
+    background-color: floralwhite;
+    padding: 5px;
+    height: 400px;
+    margin-left: 20px;
+    text-align: justify;
+    box-shadow: 2px 2px gray;
+    overflow-y: scroll;
+}
+
+.title_li{
+    font-size: 20px;
+    color: dodgerblue;
+    text-decoration: underline;
+    font-family: SansSerif;
+    font-weight: bold;
+}
+
+.description{
+    font-size: 15px;
+    font-family: SansSerif;
+}
+
+.results{
+    width: 100%;
+    text-align: center;
+}
+.disease_title{
+    padding: 15px;
+    display: none;
+    width: 400px;
+    font-size: 24px;
+    text-decoration: underline;
+    font-weight: bold;
+}
+.posts_title{
+    padding: 15px;
+    display: none;
+    width: 400px;
+    text-decoration: underline;
+    font-size: 24px;
+    font-weight: bold;
+}
+.drug_title{
+    padding: 15px;
+    display: none;
+    width: 400px;
+    text-decoration: underline;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+a:hover{
+    color: red;
+}
+a:visited{
+    color: royalblue;
+}
+.hr_line{
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 2px solid lightgrey;
+    margin: 1em 0;
+    padding: 0;
+}
