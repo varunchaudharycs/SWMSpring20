@@ -7,7 +7,10 @@ import org.json.simple.parser.JSONParser;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResponseUtil {
     public static void setDefaultResponseHeaders(HttpServletResponse response) {
@@ -42,5 +45,31 @@ public class ResponseUtil {
         } catch (Throwable e) {
             e.printStackTrace();
         }
+    }
+
+    public static void sendIndexSuccessMessage(HttpServletResponse response) throws IOException {
+        setDefaultResponseHeaders(response);
+        response.setStatus(200);
+        Map<String, String> success = new HashMap<>();
+        success.put("status", "success");
+        JSONObject respObj = new JSONObject(success);
+
+        PrintWriter out = response.getWriter();
+        out.write(respObj.toJSONString());
+        out.flush();
+        out.close();
+    }
+
+    public static void sendIndexErrorMessage(HttpServletResponse response) throws IOException {
+        setDefaultResponseHeaders(response);
+        response.setStatus(500);
+        Map<String, String> success = new HashMap<>();
+        success.put("status", "error");
+        JSONObject respObj = new JSONObject(success);
+
+        PrintWriter out = response.getWriter();
+        out.write(respObj.toJSONString());
+        out.flush();
+        out.close();
     }
 }

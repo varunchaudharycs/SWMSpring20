@@ -1,16 +1,20 @@
 package swm.group18.healthcare.servlets;
 
+import org.json.simple.JSONObject;
+import swm.group18.healthcare.constants.GlobalConstants;
+import swm.group18.healthcare.indexer.MayoClinicDataIndexer;
+import swm.group18.healthcare.indexer.PatientInfoDataIndexer;
+import swm.group18.healthcare.indexer.WebMDDrugReviewDataIndexer;
+import swm.group18.healthcare.indexer.WebMDMessageBoardsDataIndexer;
+import swm.group18.healthcare.utils.LoggerUtil;
+import swm.group18.healthcare.utils.RequestUtil;
+import swm.group18.healthcare.utils.ResponseUtil;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Properties;
-
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
 
 public class IndexRequestHandler extends HttpServlet {
 
@@ -25,37 +29,44 @@ public class IndexRequestHandler extends HttpServlet {
     }
 
     private void processIndexRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PrintWriter out = response.getWriter();
-        out.println("<html>");
-        out.println("<body>");
-        out.println("<h2>Started Indexing Data...</h2>");
-        out.println("</body>");
-        out.println("</html>");
-        out.flush();
-        out.close();
+        final String indexRequestType = request.getParameter("type");
+        LoggerUtil.logDebugMsg("Index request received with type: " + indexRequestType);
 
-//        start data indexing process
-//        this can sequentially or parallelly read different JSON data file
-//        pass content field through MetaMap and then index along with additional extracted data in Solr core.
+        JSONObject jsonObject = RequestUtil.readJSONFromRequest(request);
+//        not an empty json in index request => index data
+        if (!jsonObject.isEmpty()) {
+            try {
+                switch (indexRequestType) {
+                    case GlobalConstants.DRUG_REVIEW_INDEX_REQUEST:
+                        WebMDDrugReviewDataIndexer.indexPost(jsonObject);
+                        break;
+                    case GlobalConstants.WEBMD_MB_INDEX_REQUEST:
+                        WebMDMessageBoardsDataIndexer.indexPost(jsonObject);
+                        break;
+                    case GlobalConstants.MAYO_DISEASE_DESC_INDEX_REQUEST:
+                        MayoClinicDataIndexer.indexPost(jsonObject);
+                        break;
+                    case GlobalConstants.PATIENT_INFO_INDEX_REQUEST:
+                        PatientInfoDataIndexer.indexPost(jsonObject);
+                        break;
+                    case GlobalConstants.INDEX_COMMIT_REQUEST:
+                        MayoClinicDataIndexer.commit();
+                        PatientInfoDataIndexer.commit();
+                        WebMDDrugReviewDataIndexer.commit();
+                        WebMDMessageBoardsDataIndexer.commit();
+                        break;
+                }
 
-        Properties properties = new Properties();
-        properties.load(getServletContext().getResourceAsStream("/WEB-INF/crawled_data/test.properties"));
-        System.out.println(properties);
+                ResponseUtil.sendIndexSuccessMessage(response);
 
-        String myfile = getServletContext().getRealPath("./WEB-INF/crawled_data/adhd-posts.json");
-        System.out.println(myfile);
-        try {
-//            This will create problem with large JSON file such as patient info forum posts, for this we will chunk it
-//            before indexing the data
-            JSONParser parser = new JSONParser();
-
-            JSONArray a = (JSONArray) parser.parse(new FileReader(myfile));
-            for (Object object: a) {
-                System.out.println(object);
+            } catch (Exception e) {
+//                e.printStackTrace();
+                LoggerUtil.logException("Exception while processing index request", e);
+                ResponseUtil.sendIndexErrorMessage(response);
             }
+
         }
-        catch (Throwable e) {
-            e.printStackTrace();
-        }
+
+        LoggerUtil.logDebugMsg("Index request completed");
     }
 }
