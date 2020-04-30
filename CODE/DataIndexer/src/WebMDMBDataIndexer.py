@@ -57,6 +57,11 @@ def index_json_file(file_path):
                     # important: remove non-ASCII chars as MetaMap causes tagging issue
                     text_to_annotate = remove_non_ascii(text_to_annotate)
                     extracted_data = mmw.annotate(text_to_annotate)
+                    # don't index posts which does not have any symptoms mentioned in it as it does not add any value
+                    if 'symptoms' not in extracted_data:
+                        print('Ignored indexing: ' + str(post))
+                        continue
+
                     if 'symptoms' in extracted_data:
                         preprocessed_review['symptoms'] = extracted_data['symptoms']
                     if 'diseases' in extracted_data:
@@ -70,8 +75,9 @@ def index_json_file(file_path):
                 if r.status_code == 500:
                     failed_count += 1
 
-            except:
+            except Exception as e:
                 print("Exception while indexing this post: " + str(post))
+                print('Exception message: ' + str(e))
                 failed_count += 1
 
     print("total number of failed requests: " + str(failed_count))

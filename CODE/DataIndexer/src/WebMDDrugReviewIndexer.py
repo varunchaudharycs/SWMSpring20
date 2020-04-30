@@ -77,8 +77,9 @@ def index_json_file(file_path):
                 if r.status_code == 500:
                     failed_count += 1
 
-            except:
+            except Exception as e:
                 print("Exception while indexing this review: " + str(review))
+                print('Exception message: ' + str(e))
                 failed_count += 1
 
     print("total number of failed requests: " + str(failed_count))
