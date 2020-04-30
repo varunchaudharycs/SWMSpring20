@@ -9,6 +9,8 @@ $(document).ready(function () {
         $('div.disease_title').css('display', 'none');
         $('div.drug_title').css('display', 'none');
         $('div.drug').css('display', 'none');
+
+        $("#related_symptoms").css('visibility', 'hidden');
     })
 
     // add event listener for Enter button to invoke search
@@ -41,131 +43,8 @@ function sendSearchRequest() {
     ajaxGetRequest(window.location.href + '/search?query=' + searchQuery + '&type=' + selectedSearchOption, handleSearchResponse)
 }
 
-function handleSearchResponse(response) {
-    // var res = {
-    //     "query": "shortness of breath",
-    //
-    //     "annotated_query_terms": {
-    //         "symptoms": [
-    //             "dyspnea"
-    //         ]
-    //     },
-    //
-    //     "results": {
-    //         "mayo_clinic": [
-    //             {
-    //                 "title": "Hantavirus-Pulmonary-Syndrome",
-    //                 "url": "https://www.mayoclinic.org/diseases-conditions/hantavirus-pulmonary-syndrome/symptoms-causes/syc-20351838",
-    //                 "disease": "hantavirus-pulmonary-syndrome",
-    //                 "symptoms": [
-    //                     "Fever and chills",
-    //                     "Headaches and muscle aches",
-    //                     "A cough that produces secretions",
-    //                     "Shortness of breath",
-    //                     "Fluid accumulating within the lungs",
-    //                     "Low blood pressure",
-    //                     "Reduced heart efficiency"
-    //                 ],
-    //                 "summary": "\"Hantavirus pulmonary syndrome advances through two distinct stages. this may or may not be there, if available it is just like Google search result summary/snippet"
-    //             },
-    //             {
-    //                 "title": "Shortness of Breath",
-    //                 "disease": "",
-    //                 "url": "https://www.mayoclinic.org/diseases-conditions/amniotic-fluid-embolism/symptoms-causes/syc-20369324",
-    //                 "other_symptoms": [
-    //                     "Chills",
-    //                     "Rapid heart rate or disturbances in the rhythm of the heart rate",
-    //                     "Fetal distress, such as a slow heart rate, or other fetal heart rate abnormalities",
-    //                     "Seizures",
-    //                     "Loss of consciousness"
-    //                 ],
-    //                 "summary": "this may or may not be there, if available it is just like Google search result summary/snippet"
-    //             }
-    //         ],
-    //
-    //         "web_md_mb": [
-    //             {
-    //                 "title": "Blood Sugar diet",
-    //                 "url": "https://messageboards.webmd.com/health-conditions/f/diabetes/91517/blood-sugar-diet",
-    //                 "disease": "this will be there if we can ascertain disease name from the post, otherwise will be empty string",
-    //                 "other_symptoms": [
-    //                     "abc",
-    //                     "def"
-    //                 ],
-    //                 "treatments": [
-    //                     "abc",
-    //                     "def",
-    //                     "this treatments will be returned only if post contains some, otherwise it will be empty list"
-    //                 ],
-    //                 "summary": "I found out I had T2 diabetes in 2012. I've just started the (Michael Mosley) 8-week blood sugar diet - I discovered it after reading Fixing Dad. For those who don't know about it, it's a low-carb, low calorie program that is based on the Mediterranean diet."
-    //             },
-    //             {
-    //                 "title": "Am I at risk of getting diabetes?",
-    //                 "disease": "Diabetes",
-    //                 "url": "https://messageboards.webmd.com/health-conditions/f/diabetes/105280/am-i-at-risk-of-getting-diabetes",
-    //                 "other_symptoms": [
-    //                     "abc",
-    //                     "def"
-    //                 ],
-    //                 "treatments": [
-    //                     "abc",
-    //                     "def",
-    //                     "this treatments will be returned only if post contains some, otherwise it will be empty list"
-    //                 ],
-    //                 "summary": "I'm a 21 year old guy and weigh about 350 pounds, so a little overweight."
-    //             }
-    //         ],
-    //
-    //         "patient_info": [
-    //             {
-    //                 "title": "Persistent change in bowel habits and abdominal discomfort.",
-    //                 "disease": "disorder",
-    //                 "url": "https://patient.info/forums/discuss/persistent-change-in-bowel-habits-and-abdominal-discomfort--733001",
-    //                 "other_symptoms": [
-    //                     "abc",
-    //                     "def"
-    //                 ],
-    //                 "treatments": [
-    //                     "abc",
-    //                     "def",
-    //                     "this treatments will be returned only if post contains some, otherwise it will be empty list"
-    //                 ],
-    //                 "summary": "Hi, i'm an 18 year old male. I wish i could keep it shorter than this but i felt the need to mention all this. A couple months."
-    //             },
-    //             {
-    //                 "title": "CORONA VIRUS SPRAY",
-    //                 "disease": "disorder",
-    //                 "url": "https://patient.info/forums/discuss/corona-virus-spray-733013",
-    //                 "other_symptoms": [
-    //                     "abc",
-    //                     "def"
-    //                 ],
-    //                 "treatments": [
-    //                     "abc",
-    //                     "def",
-    //                     "this treatments will be returned only if post contains some, otherwise it will be empty list"
-    //                 ],
-    //                 "summary": "Hello A company is Saudi Arabia is using a spray to attempt to disinfect their workers. The workers walk through a tunnel."
-    //             }
-    //         ]
-    //     },
-    //     "search_type" : {
-    //         "drug_search":
-    //             [
-    //                 {
-    //                     "drug_name": "Absorica",
-    //                     "drug_detail_page": "https://www.webmd.com/drugs/2/drug-162902/absorica-oral/details",
-    //                     "drug_review_page": "https://www.webmd.com/drugs/drugreview-162902-Absorica-oral.aspx?drugid=162902&drugname=Absorica-oral&pageIndex=0&sortby=3&conditionFilter=-1"
-    //                 },
-    //                 {
-    //                     "drug_name": "Accupril",
-    //                     "drug_detail_page": "https://www.webmd.com/drugs/2/drug-3971/accupril-oral/details",
-    //                     "drug_review_page": "https://www.webmd.com/drugs/drugreview-3971-Accupril-oral.aspx?drugid=3971&drugname=Accupril-oral&pageIndex=0&sortby=3&conditionFilter=-1",
-    //                 }
-    //             ]
-    //     }
-    // }
 
+function handleSearchResponse(response) {
     // response json parsed from response
     const res = JSON.parse(response);
 
@@ -201,12 +80,43 @@ function handleSearchResponse(response) {
             if(res.results.hasOwnProperty('mayo_clinic')){
                     if (res.results.mayo_clinic.length > 0) {
                     var list = "";
-                    for (var i = 0; i < 2; i++) {
+                    var displaysize = 5;
+                    if (res.results.mayo_clinic.length < displaysize) {
+                        displaysize = res.results.mayo_clinic.length
+                    }
+                    for (var i = 0; i < displaysize; i++) {
                         var item = res.results.mayo_clinic[i];
+
+                        var symptoms = "Symptoms: ";
+                        if(item.hasOwnProperty('other_symptoms')){
+                            for (var j = 0; j < item.other_symptoms.length; j++) {
+                                if (j != 0) {
+                                    symptoms += ", "
+                                }
+                                const ss = item.other_symptoms[j];
+                                var found = false;
+                                for (var k = 0; k < res.tagged_symptoms.length; k++) {
+                                    console.log(ss)
+                                    console.log(res.tagged_symptoms[k])
+                                    if (res.tagged_symptoms[k] === ss) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (found) {
+                                    symptoms += "<span style='background-color: #ffe230'>" + ss + "</span>"
+                                }
+                                else {
+                                    symptoms += ss;
+                                }
+                            }
+                        }
+
                         list += "<ul>";
-                        list += "<li class='title_li'>" + item.title + "</li>";
+                        list += "<li class='title_li'><a href='" + item.url + "' target='_blank'>" + item.title + "</a></li>";
                         list += "<ul>";
-                        list += "<li class = 'description'>" + item.summary.substring(0, 300) + "</li>";
+                        list += "<li class = 'description'>" + item.summary.substring(0, 200) + "...</li>";
+                        list += "<li class = 'description'>" + symptoms + "</li>";
                         list += "</ul>";
                         list += "</ul>";
                         list += "<hr class='hr_line'>";
@@ -220,12 +130,44 @@ function handleSearchResponse(response) {
             var list_posts = "";
             if(res.results.hasOwnProperty('web_md_mb')) {
                 if (res.results.web_md_mb.length > 0) {
-                    for (var i = 0; i < 2; i++) {
+                    var displaysize = 5;
+                    if (res.results.web_md_mb.length < displaysize) {
+                        displaysize = res.results.web_md_mb.length
+                    }
+                    for (var i = 0; i < displaysize; i++) {
                         var item = res.results.web_md_mb[i];
+
+                        var symptoms = "Symptoms: ";
+                        if(item.hasOwnProperty('other_symptoms')){
+                            for (var j = 0; j < item.other_symptoms.length; j++) {
+                                if (j != 0) {
+                                    symptoms += ", "
+                                }
+                                const ss = item.other_symptoms[j];
+                                var found = false;
+                                for (var k = 0; k < res.tagged_symptoms.length; k++) {
+                                    console.log(ss)
+                                    console.log(res.tagged_symptoms[k])
+                                    if (res.tagged_symptoms[k] === ss) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (found) {
+                                    symptoms += "<span style='background-color: #ffe230'>" + ss + "</span>"
+                                }
+                                else {
+                                    symptoms += ss;
+                                }
+                            }
+                        }
+
                         list_posts += "<ul>";
-                        list_posts += "<li class='title_li'>" + item.title + "</li>";
+                        list_posts += "<li class='title_li'><a href='" + item.url + "' target='_blank'>" + item.title + "</a></li>";
                         list_posts += "<ul>";
-                        list_posts += "<li class='description'>" + item.summary.substring(0, 300) + " (<a href = '" + item.url + "' " + "target='_blank'" + "color ='blue'" + " >" + item.url + "</a>) </li>";
+                        // list_posts += "<li class='description'>" + item.summary.substring(0, 200) + " (<a href = '" + item.url + "' " + "target='_blank'" + "color ='blue'" + " >" + item.url + "</a>) </li>";
+                        list_posts += "<li class='description'>" + item.summary.substring(0, 200) + "...</li>";
+                        list_posts += "<li class = 'description'>" + symptoms + "</li>";
                         list_posts += "</ul>";
                         list_posts += "</ul>";
                         list_posts += "<hr class='hr_line'>"
@@ -235,12 +177,44 @@ function handleSearchResponse(response) {
 
             if(res.results.hasOwnProperty('patient_info')) {
                 if (res.results.patient_info.length > 0) {
-                    for (var i = 0; i < 2; i++) {
+                    var displaysize = 5;
+                    if (res.results.patient_info.length < displaysize) {
+                        displaysize = res.results.patient_info.length
+                    }
+
+                    for (var i = 0; i < displaysize; i++) {
                         var item = res.results.patient_info[i];
+                        var symptoms = "Symptoms: ";
+                        if(item.hasOwnProperty('other_symptoms')){
+                            for (var j = 0; j < item.other_symptoms.length; j++) {
+                                if (j != 0) {
+                                    symptoms += ", "
+                                }
+                                const ss = item.other_symptoms[j];
+                                var found = false;
+                                for (var k = 0; k < res.tagged_symptoms.length; k++) {
+                                    console.log(ss)
+                                    console.log(res.tagged_symptoms[k])
+                                    if (res.tagged_symptoms[k] === ss) {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                                if (found) {
+                                    symptoms += "<span style='background-color: #ffe230'>" + ss + "</span>"
+                                }
+                                else {
+                                    symptoms += ss;
+                                }
+                            }
+                        }
+
                         list_posts += "<ul>";
-                        list_posts += "<li class='title_li'>" + item.title + "</li>";
+                        list_posts += "<li class='title_li'><a href='" + item.url + "' target='_blank'>" + item.title + "</a></li>";
                         list_posts += "<ul>";
-                        list_posts += "<li class='description'>" + item.summary.substring(0, 300) + " (<a href = '" + item.url + "' " + "target='_blank'" + "color ='blue'" + " >" + item.url + "</a>) </li>";
+                        // list_posts += "<li class='description'>" + item.summary.substring(0, 100) + " (<a href = '" + item.url + "' " + "target='_blank'" + "color ='blue'" + " >" + item.url + "</a>) </li>";
+                        list_posts += "<li class='description'>" + item.summary.substring(0, 200) + "...</li>";
+                        list_posts += "<li class = 'description'>" + symptoms + "</li>";
                         list_posts += "</ul>";
                         list_posts += "</ul>";
                         list_posts += "<hr class='hr_line'>"
@@ -267,7 +241,8 @@ function handleSearchResponse(response) {
                 for (var i = 0; i < 5; i++) {
                     var item = res.results[i];
                     drug_list += "<ul>";
-                    drug_list += "<li class='title_li'>" + item.drug_name + "</li>";
+                    // drug_list += "<li class='title_li'>" + item.drug_name + "</li>";
+                    drug_list += "<li class='title_li'><a href='" + item.drug_detail_page + "' target='_blank'>" + item.drug_name + "</a></li>";
                     drug_list += "<ul>";
                     // drug_list += "<li class='description'>" + " (<a href = '" + item.drug_review_page + "' " + "target='_blank'" + "color ='blue'" + " >" + item.drug_review_page + "</a>) </li>";
                     drug_list += "<li class='description'>" + " (<a href = '" + item.drug_review_page + "' " + "target='_blank'" + "color ='blue'" + " > Check user reviews" + "</a>) </li>";
