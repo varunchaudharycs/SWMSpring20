@@ -18,6 +18,42 @@ public class SearchQuery {
         return queryString;
     }
 
+    public String getFullSymptomsQueryString() {
+//        String q = queryString;
+        String q = "";
+        if (symptoms != null && symptoms.size()>0) {
+            int i  = 0;
+            for (String symptom : symptoms) {
+                if (i != 0) {
+//                    q += " AND ";
+                    q += " ";
+                }
+                q =  q +  symptom;
+//                q =  q + "\"" + symptom + "\"";
+                i++;
+            }
+        }
+        return q;
+    }
+
+    public String getMultiValuedSymptomsQuery() {
+        String q = "";
+        if (symptoms != null && symptoms.size()>0) {
+            int i  = 0;
+            for (String symptom : symptoms) {
+                if (i != 0) {
+                    q += " AND ";
+                }
+                q =  q + "symptoms:" + symptom;
+                i++;
+            }
+        }
+        else {
+            q = "symptoms:" + queryString;
+        }
+        return q;
+    }
+
     public void setQueryString(String queryString) {
         this.queryString = queryString;
     }
@@ -50,6 +86,16 @@ public class SearchQuery {
             }
         }
         return relatedSympArray;
+    }
+
+    public JSONArray getTaggedymptomsJSONArray() {
+        JSONArray taggedSympArray = new JSONArray();
+        if (symptoms != null && symptoms.size() > 0) {
+            for (int i = 0; i < symptoms.size(); i++) {
+                taggedSympArray.add(symptoms.get(i));
+            }
+        }
+        return taggedSympArray;
     }
 
     public void setRelatedSymptoms(List<String> relatedSymptoms) {

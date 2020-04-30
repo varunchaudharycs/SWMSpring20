@@ -54,6 +54,7 @@ public class SearchRequestHandler extends HttpServlet {
             searchResponse.put("query", searchQuery.getQueryString());
             searchResponse.put("search_type", searchType);
             searchResponse.put("results", searchResults);
+            searchResponse.put("tagged_symptoms", searchQuery.getTaggedymptomsJSONArray());
             searchResponse.put("related_symptoms", searchQuery.getRelatedSymptomsJSONArray());
             ResponseUtil.sendSearchResponse(response, searchResponse);
         } else if (searchType.equalsIgnoreCase(GlobalConstants.DRUG_SEARCH_REQUEST)) {

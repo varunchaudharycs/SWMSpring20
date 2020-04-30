@@ -12,10 +12,7 @@ import org.json.simple.JSONObject;
 import swm.group18.healthcare.utils.LoggerUtil;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class WebMDMessageBoardsDataSearcher {
     private static final SolrClient client = new HttpSolrClient.Builder("http://localhost:8983/solr/webmd_mb_core").build();
@@ -26,12 +23,14 @@ public class WebMDMessageBoardsDataSearcher {
         JSONArray resultsArray = new JSONArray();
         final Map<String, String> queryParamMap = new HashMap<>();
 //        queryParamMap.put("q", "health_condition_name:" + searchQuery.getQueryString() + "*");
-        queryParamMap.put("q", "symptoms:" + searchQuery.getQueryString() +
-                " OR post_title:" + searchQuery.getQueryString() +
-                " OR post_content:" + searchQuery.getQueryString() +
-                " OR responses:" + searchQuery.getQueryString()
+        System.out.println("Symptoms fielded query - " + searchQuery.getMultiValuedSymptomsQuery());
+        queryParamMap.put("q", searchQuery.getMultiValuedSymptomsQuery() +
+                " OR post_title:" + searchQuery.getQueryString()
+//                " OR post_content:" + searchQuery.getQueryString() +
+//                " OR responses:" + searchQuery.getQueryString()
         );
-        queryParamMap.put("fl", "post_title, post_url, post_content");
+//        queryParamMap.put("q.op", "OR");
+        queryParamMap.put("fl", "post_title, post_url, post_content, symptoms, diseases");
         queryParamMap.put("start", "0");
         queryParamMap.put("rows", "20");
 //        queryParamMap.put("sort", "id asc");
@@ -52,9 +51,18 @@ public class WebMDMessageBoardsDataSearcher {
                     final String postUrl = (String) document.getFirstValue("post_url");
                     final String summary = (String) document.getFirstValue("post_content");
 
+                    Collection<Object> otherSymptoms = document.getFieldValues("symptoms");
+                    JSONArray otherSympArray = new JSONArray();
+                    if (otherSymptoms != null) {
+                        for (Object symp: otherSymptoms) {
+                            otherSympArray.add(symp);
+                        }
+                    }
+
                     result.put("title", postTitle);
                     result.put("url", postUrl);
                     result.put("summary", summary);
+                    result.put("other_symptoms", otherSympArray);
                     resultsArray.add(result);
 
                     drugsAlreadyInResults.add(postTitle);

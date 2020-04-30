@@ -12,10 +12,7 @@ import org.json.simple.JSONObject;
 import swm.group18.healthcare.utils.LoggerUtil;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class WebMDDrugReviewDataSearcher {
     private static final SolrClient client = new HttpSolrClient.Builder("http://localhost:8983/solr/webmd_dr_core").build();
@@ -25,11 +22,15 @@ public class WebMDDrugReviewDataSearcher {
         JSONObject responseObj = new JSONObject();
         final Map<String, String> queryParamMap = new HashMap<>();
 //        queryParamMap.put("q", "health_condition_name:" + searchQuery.getQueryString() + "*");
-        queryParamMap.put("q", "health_condition_name:" + searchQuery.getQueryString());
+        queryParamMap.put("q", "health_condition_name:" + searchQuery.getQueryString()
+//                 + " OR diseases:" + searchQuery.getQueryString()
+        );
+//        queryParamMap.put("defType", "dismax");
+//        queryParamMap.put("qf", "health_condition_name^20 diseases^2");
         queryParamMap.put("fl", "drug_name, drug_review_page, drug_detail_page");
         queryParamMap.put("start", "0");
         queryParamMap.put("rows", "100");
-//        queryParamMap.put("sort", "id asc");
+        queryParamMap.put("sort", "effectiveness_rating desc");
         MapSolrParams queryParams = new MapSolrParams(queryParamMap);
 
         final QueryResponse response;
@@ -45,6 +46,8 @@ public class WebMDDrugReviewDataSearcher {
                 if (!drugsAlreadyInResults.contains(drugName)) {
                     final String detailPageURL = (String) document.getFirstValue("drug_detail_page");
                     final String reviewPageURL = (String) document.getFirstValue("drug_review_page");
+//                    Collection<Object> otherSymptoms = document.getFieldValues("symptoms");
+//                    System.out.println(otherSymptoms);
 
                     result.put("drug_name", drugName);
                     result.put("drug_detail_page", detailPageURL);
