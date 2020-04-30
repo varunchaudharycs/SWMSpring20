@@ -18,7 +18,9 @@ class MetaMapWrapper(object):
             # print(concept)
             if concept.semtypes == '[sosy]':
                 # Sign or Symptom
-                symptoms.append(concept.preferred_name)
+                # sometimes it returns symptoms as a symptom
+                if concept.preferred_name != 'Symptoms' or concept.preferred_name != 'symptoms':
+                    symptoms.append(concept.preferred_name)
             elif concept.semtypes == '[dsyn]':
                 # Disease or Syndrome
                 diseases.append(concept.preferred_name)

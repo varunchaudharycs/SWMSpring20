@@ -7,8 +7,12 @@ from src.MetaMapWrapper import MetaMapWrapper
 
 CURRENT_DIR = os.path.dirname(__file__)
 
-start_index = 5001
-end_index = 10000
+start_index = 60001
+end_index = 65000
+
+
+def remove_non_ascii(text):
+    return ''.join([i if ord(i) < 128 else ' ' for i in text])
 
 
 def index_json_file(file_path):
@@ -27,8 +31,8 @@ def index_json_file(file_path):
             if i < start_index:
                 continue
 
-            # wait for 5 seconds before every request
-            time.sleep(2)
+            # wait for 3 seconds before every request
+            time.sleep(0.1)
             try:
                 preprocessed_review = {}
                 preprocessed_review['drug_name'] = review['drug_name']
@@ -52,6 +56,8 @@ def index_json_file(file_path):
                 review_comment = review['review_comment']
                 preprocessed_review['review_comment'] = review_comment
                 if len(review_comment) > 0:
+                    # important: remove non-ASCII chars as MetaMap causes tagging issue
+                    review_comment = remove_non_ascii(review_comment)
                     extracted_data = mmw.annotate(review_comment)
                     if 'symptoms' in extracted_data:
                         preprocessed_review['symptoms'] = extracted_data['symptoms']
@@ -84,15 +90,5 @@ def index_json_file(file_path):
 
 
 if __name__ == "__main__":
+    # alternatively pass the path of crawled data file
     index_json_file(CURRENT_DIR + os.path.sep + "webmd_drugs_reviews.json")
-
-# r = requests.post('http://localhost:8080/healthcare_mining/index', params={"type": "drug_review"}, json={
-#       "author": "edithtrotman",
-#       "post_time": "16 days ago",
-#       "post_title": "Killerbees",
-#       "post_content": "Several months ago I was attacked by bees, now if I get a mosquito bite or ant bite, any kind of insect bite I get a severe infection at the site. I’m concerned about what to expect from future bee sting.\nHave I developed an allergy to any type of bite. Is there a remedy.",
-#       "like_count": "0",
-#       "tags": []
-#     })
-# print(type(r))
-# print(r.status_code)
