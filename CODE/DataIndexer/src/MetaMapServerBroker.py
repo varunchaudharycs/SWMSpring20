@@ -51,7 +51,7 @@ class Server(BaseHTTPRequestHandler):
         # PPR to fetch similar symtpoms
         # args - <Graph(loaded from pkl), symptoms(loaded from pkl), list of user symptoms, limit of returned symptoms(default-5)>
         # returns - list of similar symptoms
-        extracted_data['symptoms_suggestion'] = self.ss.get_similar_symptoms(G, symptoms, annotated_query['symptoms'])
+        extracted_data['symptoms_suggestion'] = self.ss.get_similar_symptoms(self.G, self.symptoms, annotated_query['symptoms'])
 
         encoded = json.dumps(extracted_data).encode()
         self.wfile.write(encoded)
