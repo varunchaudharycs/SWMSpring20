@@ -10,3 +10,6 @@ Running instructions:
     ./solr create -c healthcare_core
 8. Access following URL in your browser to access the newly created core
     http://localhost:8983/solr/#/healthcare_core/core-overview
+9. Stop Solr server using - ./solr stop from the bin directory.
+
+Alternatively use solr in solar_server directory
