@@ -33,11 +33,16 @@
 
         <input id="search_box" type="text" name="search_query" class="searchTerm" placeholder="Type the symptoms here..."
                spellcheck="false">
-        <button type="submit" class="searchButton" onclick="sendSearchRequest()">
+        <button id="search_button" type="submit" class="searchButton" onclick="sendSearchRequest()">
             <!-- uses font awesome search lens-->
             <i class="fa fa-search"></i>
         </button>
     </div>
+</div>
+
+<!--related symptom suggestions-->
+<div class="search_container">
+    <label id="related_symptoms"></label>
 </div>
 
 <div class='results'>

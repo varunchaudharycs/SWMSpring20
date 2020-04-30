@@ -51,6 +51,7 @@ body {
 
 .search_container {
     text-align:center;
+    margin-top: 10px;
 }
 
 .search_option {
@@ -244,7 +245,7 @@ li.red {
 .drug {
     display: none;
     vertical-align: top;
-    width: 400px;
+    width: 600px;
     border: 2px solid darkslategray;
     background-color: floralwhite;
     padding: 5px;
