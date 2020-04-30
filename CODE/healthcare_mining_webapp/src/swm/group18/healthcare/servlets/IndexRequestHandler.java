@@ -34,6 +34,7 @@ public class IndexRequestHandler extends HttpServlet {
 
         JSONObject jsonObject = RequestUtil.readJSONFromRequest(request);
 //        not an empty json in index request => index data
+//        TODO: don't index docs which does not have any of the symptom or diag or disease
         if (!jsonObject.isEmpty()) {
             try {
                 switch (indexRequestType) {

@@ -1,5 +1,10 @@
 package swm.group18.healthcare.servlets;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import swm.group18.healthcare.constants.GlobalConstants;
+import swm.group18.healthcare.searcher.*;
+import swm.group18.healthcare.utils.LoggerUtil;
 import swm.group18.healthcare.utils.ResponseUtil;
 
 import javax.servlet.ServletException;
@@ -22,29 +27,42 @@ public class SearchRequestHandler extends HttpServlet {
 
     private void processSearchRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String searchQuery = request.getParameter("query");
+        String queryStr = request.getParameter("query");
 //        drug_search - user has typed some disease name looking for related drugs as search results
 //        disease_search - user has typed some symptoms and looking for related diseases as search results
         String searchType = request.getParameter("type");
-        System.out.println(searchQuery);
-        System.out.println(searchType);
+
+        LoggerUtil.logDebugMsg("user search in: " + searchType + " and the query was: " + queryStr);
         ResponseUtil.setDefaultResponseHeaders(response);
 
-//        TODO: temporary search response for client side development
-//        tobe removed later
-        if (searchType.equals("disease_search")) {
-            ResponseUtil.sendDevJSONResponseForDiseaseSearch(getServletContext(), response);
-        } else if (searchType.equals("drug_search")) {
-            ResponseUtil.sendDevJSONResponseForDrugSearch(getServletContext(), response);
-        }
 
-//        PrintWriter out = response.getWriter();
-//        out.println("<html>");
-//        out.println("<body>");
-//        out.println("<h1>Search Servlet</h1>");
-//        out.println("</body>");
-//        out.println("</html>");
-//        out.flush();
-//        out.close();
+        if (searchType.equalsIgnoreCase(GlobalConstants.DISEASE_SEARCH_REQUEST)) {
+            // first extract annotated details from query
+            SearchQuery searchQuery = AnnotateUsingMetaMap.annotateQuery(queryStr);
+            LoggerUtil.logDebugMsg(searchQuery.toString());
+            // search in all three solr cores
+
+            JSONObject searchResults = new JSONObject();
+            JSONArray mayoClinicResults = MayoClinicDataSearcher.search(searchQuery);
+            searchResults.put("mayo_clinic", mayoClinicResults);
+            JSONArray webMDMBResults = WebMDMessageBoardsDataSearcher.search(searchQuery);
+            searchResults.put("web_md_mb", webMDMBResults);
+            JSONArray patientInfoResults = PatientInfoDataSearcher.search(searchQuery);
+            searchResults.put("patient_info", patientInfoResults);
+
+            JSONObject searchResponse = new JSONObject();
+            searchResponse.put("query", searchQuery.getQueryString());
+            searchResponse.put("search_type", searchType);
+            searchResponse.put("results", searchResults);
+            searchResponse.put("related_symptoms", searchQuery.getRelatedSymptomsJSONArray());
+            ResponseUtil.sendSearchResponse(response, searchResponse);
+        } else if (searchType.equalsIgnoreCase(GlobalConstants.DRUG_SEARCH_REQUEST)) {
+            // search in drug review core only
+            SearchQuery searchQuery = new SearchQuery(queryStr);
+            JSONObject searchResponse = WebMDDrugReviewDataSearcher.search(searchQuery);
+            searchResponse.put("query", searchQuery.getQueryString());
+            searchResponse.put("search_type", searchType);
+            ResponseUtil.sendSearchResponse(response, searchResponse);
+        }
     }
 }

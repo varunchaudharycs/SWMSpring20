@@ -47,6 +47,15 @@ public class ResponseUtil {
         }
     }
 
+    public static void sendSearchResponse(HttpServletResponse response, JSONObject respObj) throws IOException {
+        setDefaultResponseHeaders(response);
+        response.setStatus(200);
+        PrintWriter out = response.getWriter();
+        out.write(respObj.toJSONString());
+        out.flush();
+        out.close();
+    }
+
     public static void sendIndexSuccessMessage(HttpServletResponse response) throws IOException {
         setDefaultResponseHeaders(response);
         response.setStatus(200);
