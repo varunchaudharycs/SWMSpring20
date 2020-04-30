@@ -1,0 +1,5 @@
+- Crawlers directory has source code for all four crawlers which we wrote. Each crawler has execution instructions to run and crawl the data.
+- patient_info_crawler is Python Scrapy based crawler
+- webmd_drug_crawler is also Python Scrapy based crawler
+- webmd_mb_crawler is Browser automation based crawler as we were not able to crawl using Python based crawler.
+- Scraping Mayo.ipynb is simple python code based crawler.
