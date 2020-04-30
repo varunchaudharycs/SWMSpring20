@@ -51,7 +51,7 @@ function handleSearchResponse(response) {
     if (res != '') {
 
         if(res.hasOwnProperty('related_symptoms') && res.related_symptoms.length > 0) {
-            var newLabel = 'Related Symptoms: ';
+            var newLabel = '<b>Related Symptoms: </b>';
             for (var i = 0; i < res.related_symptoms.length; i++) {
                 if (i != 0) {
                     newLabel += ', ';
@@ -87,7 +87,7 @@ function handleSearchResponse(response) {
                     for (var i = 0; i < displaysize; i++) {
                         var item = res.results.mayo_clinic[i];
 
-                        var symptoms = "Symptoms: ";
+                        var symptoms = "<b>Symptoms: </b>";
                         if(item.hasOwnProperty('other_symptoms')){
                             for (var j = 0; j < item.other_symptoms.length; j++) {
                                 if (j != 0) {
@@ -137,7 +137,7 @@ function handleSearchResponse(response) {
                     for (var i = 0; i < displaysize; i++) {
                         var item = res.results.web_md_mb[i];
 
-                        var symptoms = "Symptoms: ";
+                        var symptoms = "<b>Symptoms: </b>";
                         if(item.hasOwnProperty('other_symptoms')){
                             for (var j = 0; j < item.other_symptoms.length; j++) {
                                 if (j != 0) {
@@ -184,7 +184,7 @@ function handleSearchResponse(response) {
 
                     for (var i = 0; i < displaysize; i++) {
                         var item = res.results.patient_info[i];
-                        var symptoms = "Symptoms: ";
+                        var symptoms = "<b>Symptoms: </b>";
                         if(item.hasOwnProperty('other_symptoms')){
                             for (var j = 0; j < item.other_symptoms.length; j++) {
                                 if (j != 0) {
