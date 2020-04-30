@@ -3,10 +3,26 @@ from urllib import parse
 from sys import argv
 import json
 from src.MetaMapWrapper import MetaMapWrapper
+from src.PPRSimilarSymptoms import PPRSimilarSymptoms
+import networkx as nx
+import pickle
+import os
+
+CURRENT_DIR = os.path.dirname(__file__)
+GRAPH_PKL_PATH = os.path.join(CURRENT_DIR, 'ppr_graph.pkl')
+SYMPTOMS_PKL_PATH = os.path.join(CURRENT_DIR, 'ppr_symptoms.pkl')
 
 
 class Server(BaseHTTPRequestHandler):
     mmw = MetaMapWrapper()
+    # PPR
+    G = nx.Graph()
+    symptoms = set()
+    with open(SYMPTOMS_PKL_PATH, 'rb') as f:
+        symptoms = pickle.load(f)
+    with open(GRAPH_PKL_PATH, 'rb') as f:
+        G = pickle.load(f)
+    ss = PPRSimilarSymptoms()
 
     def _set_headers(self):
         self.send_response(200)
@@ -32,8 +48,11 @@ class Server(BaseHTTPRequestHandler):
         if 'diagnostics' in extracted_data:
             annotated_query['diagnostic_procedures'] = extracted_data['diagnostics']
 
-        # TODO: fetch suggested symptoms using page rank and append as
-        # extracted_data['symptoms_suggestion'] = list of symptoms
+        # PPR to fetch similar symtpoms
+        # args - <Graph(loaded from pkl), symptoms(loaded from pkl), list of user symptoms, limit of returned symptoms(default-5)>
+        # returns - list of similar symptoms
+        extracted_data['symptoms_suggestion'] = self.ss.get_similar_symptoms(G, symptoms, annotated_query['symptoms'])
+
         encoded = json.dumps(extracted_data).encode()
         self.wfile.write(encoded)
 
