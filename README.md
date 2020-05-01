@@ -6,3 +6,4 @@ Project Directory Structure:
 - ./DATA directory has link to the crawled data. As the data size were huge we planned to store in drive and make it accessible by sharing it.
 
 Evaluation Metric Parameters- https://docs.google.com/spreadsheets/d/1WW00RCuZjRi-ksdI63eiWW6IpuneELjX8Y1nCBJfmdU/edit?usp=sharing
+Sample queries ran on our system is avilable under ./EVALUATIONS directory.
